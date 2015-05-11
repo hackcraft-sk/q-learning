@@ -67,7 +67,7 @@ public class QLearning implements Learning {
 		
 		// Using this possible action, consider to go to the next state
 		double q = qMatrix[currentStateIndex][actionIndex];
-		double r=0;//double r = getReward(currentState.id, currentAction.id);
+		double r=reward;//double r = getReward(currentState.id, currentAction.id);
 
 		double maxQ = maxQ(nextStateIndex);
 

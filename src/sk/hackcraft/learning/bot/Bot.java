@@ -1,4 +1,6 @@
-package sk.hackcraft.qlearning.bot;
+package sk.hackcraft.learning.bot;
+
+import java.util.HashMap;
 
 import jnibwapi.Player;
 import jnibwapi.Unit;
@@ -8,11 +10,14 @@ import sk.hackcraft.bwu.Graphics;
 import sk.hackcraft.bwu.Vector2D;
 import sk.hackcraft.bwu.Vector2DMath;
 import sk.hackcraft.bwu.selection.UnitSet;
+import sk.hackcraft.learning.Action;
+import sk.hackcraft.learning.Learning;
+import sk.hackcraft.learning.QLearning;
+import sk.hackcraft.learning.State;
 
 public class Bot extends sk.hackcraft.bwu.AbstractBot {
 	
-	static public void main(String[] arguments)
-	{
+	static public void main(String[] arguments) {
 		BWU bwu = new BWU()
 		{
 			@Override
@@ -25,30 +30,30 @@ public class Bot extends sk.hackcraft.bwu.AbstractBot {
 		bwu.start();
 	}
 	
-	public Bot(Game game)
-	{
+	private UnitState[] states = new UnitState[]{};
+	private UnitAction[] actions = new UnitAction[]{};
+	
+	private Learning learning = new QLearning(states, actions);
+	
+	private HashMap<Unit, UnitController> controllers = new HashMap<>();
+	
+	public Bot(Game game) {
 		super(game);
 	}
-
+	
 	@Override
-	public void gameUpdated()
-	{
-		UnitSet myUnits = game.getMyUnits();
-
-		for (Unit unit : myUnits)
-		{
-			if (unit.isIdle() || unit.isStuck())
-			{
-				// generate new position
-				Vector2D position = Vector2DMath.randomVector().scale(game.getMap());
-				// attack move!
-				unit.attack(position);
-			}
+	public void gameStarted() {
+		for(Unit unit : getGame().getMyUnits()) {
+			controllers.put(unit, new UnitController(states, learning, unit));
 		}
 	}
 
 	@Override
-	public void gameStarted() {}
+	public void gameUpdated() {
+		for (Unit unit : getGame().getMyUnits()) {
+			controllers.get(unit).update(getGame());
+		}
+	}
 
 	@Override
 	public void gameEnded(boolean isWinner) {}

@@ -2,7 +2,6 @@ package sk.hackcraft.learning.bot;
 
 import sk.hackcraft.bwu.Game;
 import sk.hackcraft.learning.Learning;
-import sk.hackcraft.learning.State;
 import jnibwapi.Unit;
 
 public class UnitController {
@@ -13,9 +12,9 @@ public class UnitController {
 	
 	private Unit unit;
 	
-	private UnitState currentState = null;
+	private UnitState lastState = null;
 
-	private UnitState executingAction = null;
+	private UnitAction executingAction = null;
 	
 	private int possibleStateChangeFrame = 0;
 	
@@ -26,17 +25,26 @@ public class UnitController {
 	
 	public void update(Game game) {
 		if(shouldDecideAction(game)) {
-			if(currentState != null) {
-				
+			UnitState currentState = detectState();
+			
+			if(lastState != null) {
+				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit);
+				learning.experience(lastState, executingAction, currentState, reward);
 			}
+			
+			executingAction = (UnitAction)learning.estimateBestActionIn(currentState);
+			lastState = currentState;
+			
+			executingAction.executeOn(game, unit);
+			possibleStateChangeFrame += 15;
 		}
 	}
 	
 	private boolean shouldDecideAction(Game game) {
-		return currentState == null || game.getFrameCount() >= possibleStateChangeFrame;
+		return lastState == null || game.getFrameCount() >= possibleStateChangeFrame;
 	}
 	
-	private State detectState() {
+	private UnitState detectState() {
 		for(UnitState state : states) {
 			if(state.isUnitInIt(unit)) {
 				return state;

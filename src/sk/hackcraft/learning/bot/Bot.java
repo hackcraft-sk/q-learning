@@ -8,12 +8,11 @@ import sk.hackcraft.bwu.BWU;
 import sk.hackcraft.bwu.Game;
 import sk.hackcraft.bwu.Graphics;
 import sk.hackcraft.bwu.Vector2D;
-import sk.hackcraft.bwu.Vector2DMath;
-import sk.hackcraft.bwu.selection.UnitSet;
-import sk.hackcraft.learning.Action;
 import sk.hackcraft.learning.Learning;
 import sk.hackcraft.learning.QLearning;
 import sk.hackcraft.learning.State;
+import sk.hackcraft.learning.bot.actions.AttackNearestAction;
+import sk.hackcraft.learning.bot.actions.RunAction;
 
 public class Bot extends sk.hackcraft.bwu.AbstractBot {
 	
@@ -30,8 +29,8 @@ public class Bot extends sk.hackcraft.bwu.AbstractBot {
 		bwu.start();
 	}
 	
-	private UnitState[] states = new UnitState[]{};
-	private UnitAction[] actions = new UnitAction[]{};
+	private UnitState[] states = UnitStates.build();
+	private UnitAction[] actions = new UnitAction[]{ new AttackNearestAction(), new RunAction() };
 	
 	private Learning learning = new QLearning(states, actions);
 	
@@ -43,15 +42,23 @@ public class Bot extends sk.hackcraft.bwu.AbstractBot {
 	
 	@Override
 	public void gameStarted() {
-		for(Unit unit : getGame().getMyUnits()) {
-			controllers.put(unit, new UnitController(states, learning, unit));
+		try {
+			for(Unit unit : getGame().getMyUnits()) {
+				controllers.put(unit, new UnitController(states, learning, unit));
+			}
+		} catch(Throwable t) {
+			t.printStackTrace();
 		}
 	}
 
 	@Override
 	public void gameUpdated() {
-		for (Unit unit : getGame().getMyUnits()) {
-			controllers.get(unit).update(getGame());
+		try {
+			for (Unit unit : getGame().getMyUnits()) {
+				controllers.get(unit).update(getGame());
+			}
+		} catch(Throwable t) {
+			t.printStackTrace();
 		}
 	}
 

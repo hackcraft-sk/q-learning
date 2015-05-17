@@ -22,8 +22,13 @@ public class QLearning implements Learning {
 		this.states = states;
 		this.actions = actions;
 		buildIndices();
+		buildMatrix();
 	}
 
+	private void buildMatrix() {
+		qMatrix = new double[states.length][actions.length];
+	}
+	
 	private void buildIndices() {
 		for (int i = 0; i < states.length; i++) {
 			stateIndices.put(states[i], i);
@@ -42,7 +47,7 @@ public class QLearning implements Learning {
 		}
 		return maxValue;
 	}
-
+	
 	@Override
 	public Action estimateBestActionIn(State state) {
 		int stateIndex = stateIndices.get(state);
@@ -52,7 +57,7 @@ public class QLearning implements Learning {
 		for (int actionIndex = 0; actionIndex < actions.length; actionIndex++) {
 			double value = qMatrix[stateIndex][actionIndex];
 
-			if (value > maxValue) {
+			if (bestActionIndex == -1 || value > maxValue) {
 				maxValue = value;
 				bestActionIndex = actionIndex;
 			}

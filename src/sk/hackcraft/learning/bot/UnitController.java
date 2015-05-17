@@ -21,18 +21,26 @@ public class UnitController {
 	public UnitController(UnitState[] states, Learning learning, Unit unit) {
 		this.unit = unit;
 		this.states = states;
+		this.learning = learning;
 	}
 	
 	public void update(Game game) {
 		if(shouldDecideAction(game)) {
-			UnitState currentState = detectState();
+			System.out.println("Deciding action");
+			
+			UnitState currentState = detectState(game);
+			
+			System.out.println("Current state "+currentState);
 			
 			if(lastState != null) {
 				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit);
 				learning.experience(lastState, executingAction, currentState, reward);
 			}
 			
+			System.out.println("Learned...");
+			
 			executingAction = (UnitAction)learning.estimateBestActionIn(currentState);
+			System.out.println(lastState+" -> "+currentState+" ACT: "+executingAction);
 			lastState = currentState;
 			
 			executingAction.executeOn(game, unit);
@@ -44,9 +52,9 @@ public class UnitController {
 		return lastState == null || game.getFrameCount() >= possibleStateChangeFrame;
 	}
 	
-	private UnitState detectState() {
+	private UnitState detectState(Game game) {
 		for(UnitState state : states) {
-			if(state.isUnitInIt(unit)) {
+			if(state.isUnitInIt(game, unit)) {
 				return state;
 			}
 		}

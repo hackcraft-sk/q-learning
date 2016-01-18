@@ -1,25 +1,29 @@
 package sk.hackcraft.learning;
 
-public class MockLearning implements Learning {
+import sk.hackcraft.learning.iface.IAction;
+import sk.hackcraft.learning.iface.ILearning;
+import sk.hackcraft.learning.iface.IState;
 
-	private State[] states;
-	private Action[] actions;
+public class MockLearning implements ILearning {
+
+	private IState[] states;
+	private IAction[] actions;
 	private int actionIndex = 0;
 	
-	public MockLearning(State[] states, Action[] actions) {
+	public MockLearning(IState[] states, IAction[] actions) {
 		this.states = states;
 		this.actions = actions;
 	}
 	
 	@Override
-	public Action estimateBestActionIn(State state) {
-		Action result = actions[actionIndex];
+	public IAction estimateBestActionIn(IState state) {
+		IAction result = actions[actionIndex];
 		actionIndex = (actionIndex + 1) % actions.length;
 		return result;
 	}
 
 	@Override
-	public void experience(State originalState, Action tookAction, State currentState, double gainedReward) {
+	public void experience(IState originalState, IAction tookAction, IState currentState, double gainedReward) {
 		// nothing actually
 	}
 

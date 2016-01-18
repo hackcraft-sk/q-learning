@@ -8,11 +8,11 @@ import sk.hackcraft.bwu.BWU;
 import sk.hackcraft.bwu.Game;
 import sk.hackcraft.bwu.Graphics;
 import sk.hackcraft.bwu.Vector2D;
-import sk.hackcraft.learning.Learning;
 import sk.hackcraft.learning.QLearning;
-import sk.hackcraft.learning.State;
 import sk.hackcraft.learning.bot.actions.AttackNearestAction;
 import sk.hackcraft.learning.bot.actions.RunAction;
+import sk.hackcraft.learning.iface.ILearning;
+import sk.hackcraft.learning.iface.IState;
 
 public class Bot extends sk.hackcraft.bwu.AbstractBot {
 	
@@ -32,7 +32,7 @@ public class Bot extends sk.hackcraft.bwu.AbstractBot {
 	private UnitState[] states = UnitStates.build();
 	private UnitAction[] actions = new UnitAction[]{ new AttackNearestAction(), new RunAction() };
 	
-	private Learning learning = new QLearning(states, actions);
+	private ILearning learning = new QLearning(states, actions);
 	
 	private HashMap<Unit, UnitController> controllers = new HashMap<>();
 	

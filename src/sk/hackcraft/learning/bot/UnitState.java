@@ -2,10 +2,10 @@ package sk.hackcraft.learning.bot;
 
 import sk.hackcraft.bwu.Game;
 import sk.hackcraft.bwu.selection.NearestPicker;
-import sk.hackcraft.learning.State;
+import sk.hackcraft.learning.iface.IState;
 import jnibwapi.Unit;
 
-public class UnitState implements State {
+public class UnitState implements IState {
 	
 	private int lifeFrom, lifeTo;
 	

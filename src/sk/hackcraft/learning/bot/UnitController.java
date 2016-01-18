@@ -1,14 +1,14 @@
 package sk.hackcraft.learning.bot;
 
 import sk.hackcraft.bwu.Game;
-import sk.hackcraft.learning.Learning;
+import sk.hackcraft.learning.iface.ILearning;
 import jnibwapi.Unit;
 
 public class UnitController {
 
 	private UnitState [] states;
 	
-	private Learning learning;
+	private ILearning learning;
 	
 	private Unit unit;
 	
@@ -18,7 +18,7 @@ public class UnitController {
 	
 	private int possibleStateChangeFrame = 0;
 	
-	public UnitController(UnitState[] states, Learning learning, Unit unit) {
+	public UnitController(UnitState[] states, ILearning learning, Unit unit) {
 		this.unit = unit;
 		this.states = states;
 		this.learning = learning;

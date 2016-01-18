@@ -2,23 +2,27 @@ package sk.hackcraft.learning;
 
 import java.util.HashMap;
 
-public class QLearning implements Learning {
+import sk.hackcraft.learning.iface.IAction;
+import sk.hackcraft.learning.iface.ILearning;
+import sk.hackcraft.learning.iface.IState;
+
+public class QLearning implements ILearning {
 
 	// learning rates
 	private double alpha = 0.1;
 	private double gamma = 0.9;
 
-	private State[] states;
-	private Action[] actions;
+	private IState[] states;
+	private IAction[] actions;
 
 	private double[][] qMatrix;
 	
 	//private int[][] rewardMatrix; 					// rewards of states and action
 
-	private HashMap<State, Integer> stateIndices = new HashMap<>();
-	private HashMap<Action, Integer> actionIndices = new HashMap<>();
+	private HashMap<IState, Integer> stateIndices = new HashMap<>();
+	private HashMap<IAction, Integer> actionIndices = new HashMap<>();
 
-	public QLearning(State[] states, Action[] actions) {
+	public QLearning(IState[] states, IAction[] actions) {
 		this.states = states;
 		this.actions = actions;
 		buildIndices();
@@ -49,7 +53,7 @@ public class QLearning implements Learning {
 	}
 	
 	@Override
-	public Action estimateBestActionIn(State state) {
+	public IAction estimateBestActionIn(IState state) {
 		int stateIndex = stateIndices.get(state);
 		int bestActionIndex = -1;
 		double maxValue = Double.MIN_VALUE;
@@ -65,7 +69,7 @@ public class QLearning implements Learning {
 		return actions[bestActionIndex];
 	}
 
-	public void experience(State currentState, Action action, State nextState, double reward) {
+	public void experience(IState currentState, IAction action, IState nextState, double reward) {
 		int currentStateIndex = stateIndices.get(currentState);
 		int nextStateIndex = stateIndices.get(nextState);
 		int actionIndex = actionIndices.get(action);

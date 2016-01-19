@@ -1,3 +1,5 @@
+package sk.hackcraft.learning.pers;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;

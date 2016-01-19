@@ -4,12 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import sk.hackcraft.learning.iface.IAction;
 import sk.hackcraft.learning.iface.IState;
 import sk.hackcraft.learning.pers.FileIO;
 
 public class Statistics {
 	
-	public static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm hh:mm:ss"); 
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.mm hh:mm:ss");
+	private final String TAB_SEPARATOR = "\t";
 	
 	private ArrayList<String> statsLogArray;
 	private FileIO fileIO = null;
@@ -37,14 +39,28 @@ public class Statistics {
 	
 	// BASIC LIFECYCLE OF GAME
 	public void startGame(int round) {
-		print(">--- STARTING game (" + round + ". round) at " + dateFormat.format(new Date()));
+		print(">---- STARTING game (" + round + ". round) at " + dateFormat.format(new Date()));
 	}
 	
 	public void endGame() {
 		if (fileIO != null) saveLogs();
 		
-		print(">--- ENDING game at " + dateFormat.format(new Date()));
+		print(">---- ENDING game at " + dateFormat.format(new Date()));
 	}
 	
 	// IN GAME
+	public void currentState(IState state) {
+		print("Unit state: life("+state.lifeStatus.toString()+") " + TAB_SEPARATOR
+				+ "allies arround("+state.countOfAlliedUnits+") " + TAB_SEPARATOR
+				+ "enemies arround("+state.countOfEnemyUnits+") " + TAB_SEPARATOR
+				+ "distance of nearest enemy("+state.distanceOfNearestEnemy.toString()+")"
+				);
+	}
+	
+	public void choosenAction(IAction action) {
+		print("Unit action: " + action.actionType.toString());
+	}
+	
+	// LEARNING
+	
 }

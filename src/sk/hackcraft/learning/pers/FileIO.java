@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FileIO {
 
@@ -16,6 +17,38 @@ public class FileIO {
 		this.FILE_NAME = fileName;
 	}
 	
+	public void clearFile() {
+		try {
+			FileWriter out = new FileWriter(FILE_NAME);
+			out.write("");
+		   
+			if (out != null) {
+				out.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// STATISCTICS BEHAVIOR
+	public void saveToFile(ArrayList<String> statsLogArray) {
+		FileWriter out = null;
+
+		try {
+		   out = new FileWriter(FILE_NAME, true);
+		   for (String row : statsLogArray) {
+			   out.write(row + LINE_SEPARATOR);
+		   }
+		   
+		   if (out != null) {
+		      out.close();
+		   }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// MATRIX BEHAVIOR
 	public void saveToFile(double[][] matrix) {
 		FileWriter out = null;
 

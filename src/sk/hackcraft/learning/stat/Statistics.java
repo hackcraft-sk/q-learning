@@ -15,8 +15,14 @@ public class Statistics {
 	
 	private ArrayList<String> statsLogArray;
 	private FileIO fileIO = null;
+	private Date currentDate;
+	
+	public Statistics() {
+		currentDate = new Date();
+	}
 	
 	public Statistics(String fileName) {
+		currentDate = new Date();
 		fileIO = new FileIO(fileName);
 		
 		statsLogArray = new ArrayList<>();
@@ -24,9 +30,14 @@ public class Statistics {
 	
 	// BASIC FUNDAMENTAL
 	private void print(final String value) {
-		if (fileIO != null) statsLogArray.add(value);
+		String log = getActualDateTime() + value;
+		if (fileIO != null) statsLogArray.add(log);
 		
-		System.out.println(value);
+		System.out.println(log);
+	}
+	
+	private String getActualDateTime() {
+		return "[" + dateFormat.format(currentDate) + "] ";
 	}
 	
 	private void saveLogs() {
@@ -39,13 +50,13 @@ public class Statistics {
 	
 	// BASIC LIFECYCLE OF GAME
 	public void startGame(int round) {
-		print(">---- STARTING game (" + round + ". round) at " + dateFormat.format(new Date()));
+		print(">---- STARTING game (" + round + ". round)");
 	}
 	
 	public void endGame() {
 		if (fileIO != null) saveLogs();
 		
-		print(">---- ENDING game at " + dateFormat.format(new Date()));
+		print(">---- ENDING game");
 	}
 	
 	// IN GAME

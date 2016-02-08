@@ -69,7 +69,7 @@ public class Statistics {
 	}
 	
 	public void choosenAction(IAction action) {
-		print("Unit action: " + action.actionType.toString());
+		print("Unit action: " + action.toString());
 	}
 	
 	// LEARNING

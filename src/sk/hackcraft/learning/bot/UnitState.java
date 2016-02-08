@@ -1,9 +1,8 @@
 package sk.hackcraft.learning.bot;
 
-import sk.hackcraft.bwu.Game;
-import sk.hackcraft.bwu.selection.NearestPicker;
+import bwapi.Game;
+import bwapi.Unit;
 import sk.hackcraft.learning.iface.IState;
-import jnibwapi.Unit;
 
 public class UnitState implements IState {
 	
@@ -24,23 +23,23 @@ public class UnitState implements IState {
 	
 	public boolean isUnitInIt(Game game, Unit unit) {
 		int hp = unit.getHitPoints();
-		Unit closestEnemy = game.getEnemyUnits().pick(new NearestPicker(unit));
+		/*Unit closestEnemy = game.getEnemyUnits().pick(new NearestPicker(unit));
 		double distance = closestEnemy == null ? Integer.MAX_VALUE-1 : closestEnemy.getDistance(unit);
-		int enemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1 : closestEnemy.getHitPoints();
+		int enemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1 : closestEnemy.getHitPoints();*/
 		
-		return	hp >= lifeFrom && hp < lifeTo &&
+		return	hp >= lifeFrom && hp < lifeTo/* &&
 				distance >= closestEnemyDistanceFrom && distance < closestEnemyDistanceTo &&
-				enemyHp >= closestEnemyLifeFrom && enemyHp < closestEnemyLifeTo;
+				enemyHp >= closestEnemyLifeFrom && enemyHp < closestEnemyLifeTo*/;
 	}
 	
 	public double getValue(Game game, Unit unit) {
 		double value = 0;
 		
-		for(Unit myUnit : game.getMyUnits()) {
+		for(Unit myUnit : game.self().getUnits()) {
 			value += myUnit.getHitPoints();
 		}
 		
-		for(Unit enemyUnit : game.getEnemyUnits()) {
+		for(Unit enemyUnit : game.enemy().getUnits()) {
 			value -= enemyUnit.getHitPoints();
 		}
 		

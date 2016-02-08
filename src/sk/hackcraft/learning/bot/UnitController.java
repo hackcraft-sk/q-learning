@@ -1,8 +1,8 @@
 package sk.hackcraft.learning.bot;
 
-import sk.hackcraft.bwu.Game;
+import bwapi.Game;
+import bwapi.Unit;
 import sk.hackcraft.learning.iface.ILearning;
-import jnibwapi.Unit;
 
 public class UnitController {
 

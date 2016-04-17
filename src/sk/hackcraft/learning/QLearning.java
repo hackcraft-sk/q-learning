@@ -1,6 +1,7 @@
 package sk.hackcraft.learning;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import sk.hackcraft.learning.iface.IAction;
 import sk.hackcraft.learning.iface.ILearning;
@@ -9,8 +10,8 @@ import sk.hackcraft.learning.iface.IState;
 public class QLearning implements ILearning {
 
 	// learning rates
-	private double alpha = 0.1;
-	private double gamma = 0.9;
+	private double alpha = 0.3;
+	private double gamma = 0.7;
 
 	private IState[] states;
 	private IAction[] actions;
@@ -19,20 +20,27 @@ public class QLearning implements ILearning {
 	
 	//private int[][] rewardMatrix; 					// rewards of states and action
 
-	private HashMap<IState, Integer> stateIndices = new HashMap<>();
+	private HashMap<IState, Integer> stateIndices = new HashMap<>(); 
 	private HashMap<IAction, Integer> actionIndices = new HashMap<>();
+	
+	private final Random mProbabilityRandom;
+	private final Random mActionIndexRandom;
 
 	public QLearning(IState[] states, IAction[] actions) {
 		this.states = states;
 		this.actions = actions;
 		buildIndices();
 		buildMatrix();
+		
+		mProbabilityRandom = new Random();
+		mActionIndexRandom = new Random();
 	}
 
 	private void buildMatrix() {
 		qMatrix = new double[states.length][actions.length];
 	}
 	
+	// index´s for states and actions
 	private void buildIndices() {
 		for (int i = 0; i < states.length; i++) {
 			stateIndices.put(states[i], i);
@@ -42,7 +50,7 @@ public class QLearning implements ILearning {
 		}
 	}
 
-	// TODO Optimize, maybe not needed every time, use sime kind of caching and invalidation for states.
+	// TODO Optimize, maybe not needed every time, use some kind of caching and invalidation for states.
 	protected double maxQ(int stateIndex) {
 		double maxValue = Double.MIN_VALUE;
 
@@ -66,6 +74,11 @@ public class QLearning implements ILearning {
 				bestActionIndex = actionIndex;
 			}
 		}
+		
+		if (mProbabilityRandom.nextDouble() >= gamma) {
+			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
+		}
+		
 		return actions[bestActionIndex];
 	}
 

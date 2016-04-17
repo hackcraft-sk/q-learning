@@ -15,14 +15,8 @@ public class Statistics {
 	
 	private ArrayList<String> statsLogArray;
 	private FileIO fileIO = null;
-	private Date currentDate;
-	
-	public Statistics() {
-		currentDate = new Date();
-	}
 	
 	public Statistics(String fileName) {
-		currentDate = new Date();
 		fileIO = new FileIO(fileName);
 		
 		statsLogArray = new ArrayList<>();
@@ -37,7 +31,7 @@ public class Statistics {
 	}
 	
 	private String getActualDateTime() {
-		return "[" + dateFormat.format(currentDate) + "] ";
+		return "[" + dateFormat.format(new Date()) + "] ";
 	}
 	
 	private void saveLogs() {

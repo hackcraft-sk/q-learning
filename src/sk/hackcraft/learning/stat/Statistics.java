@@ -29,7 +29,7 @@ public class Statistics {
 	}
 	
 	// BASIC FUNDAMENTAL
-	private void print(final String value) {
+	public void print(final String value) {
 		String log = getActualDateTime() + value;
 		if (fileIO != null) statsLogArray.add(log);
 		
@@ -49,8 +49,8 @@ public class Statistics {
 	}
 	
 	// BASIC LIFECYCLE OF GAME
-	public void startGame(int round) {
-		print(">---- STARTING game (" + round + ". round)");
+	public void startGame(/*int round*/) {
+		print(">---- STARTING game "/* + round + ". round)"*/);
 	}
 	
 	public void endGame() {
@@ -71,7 +71,4 @@ public class Statistics {
 	public void choosenAction(IAction action) {
 		print("Unit action: " + action.toString());
 	}
-	
-	// LEARNING
-	
 }

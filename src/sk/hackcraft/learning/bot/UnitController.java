@@ -3,12 +3,15 @@ package sk.hackcraft.learning.bot;
 import bwapi.Game;
 import bwapi.Unit;
 import sk.hackcraft.learning.iface.ILearning;
+import sk.hackcraft.learning.stat.Statistics;
 
 public class UnitController {
 
 	private UnitState [] states;
 	
 	private ILearning learning;
+	
+	private Statistics statistics;
 	
 	private Unit unit;
 	
@@ -18,31 +21,33 @@ public class UnitController {
 	
 	private int possibleStateChangeFrame = 0;
 	
-	public UnitController(UnitState[] states, ILearning learning, Unit unit) {
+	public UnitController(UnitState[] states, ILearning learning, Unit unit, Statistics statistics) {
 		this.unit = unit;
 		this.states = states;
 		this.learning = learning;
+		this.statistics = statistics;
 	}
 	
 	public void update(Game game) {
 		if(shouldDecideAction(game)) {
-			System.out.println("Deciding action");
+			statistics.print("Deciding action");
 			
 			UnitState currentState = detectState(game);
 			
-			System.out.println("Current state "+currentState);
+			statistics.print("Current state "+currentState);
 			
 			if(lastState != null) {
 				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit);
 				learning.experience(lastState, executingAction, currentState, reward);
 			}
 			
-			System.out.println("Learned...");
+			statistics.print("Learned...");
 			
 			executingAction = (UnitAction)learning.estimateBestActionIn(currentState);
-			System.out.println(lastState+" -> "+currentState+" ACT: "+executingAction);
+			statistics.print(lastState+" -> "+currentState+" ACT: "+executingAction);
 			lastState = currentState;
-			
+
+			statistics.print("ACTION: " + executingAction.toString());
 			executingAction.executeOn(game, unit);
 			possibleStateChangeFrame += 15;
 		}

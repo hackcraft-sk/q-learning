@@ -27,4 +27,10 @@ public class MockLearning implements ILearning {
 		// nothing actually
 	}
 
+	@Override
+	public double[][] getQMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

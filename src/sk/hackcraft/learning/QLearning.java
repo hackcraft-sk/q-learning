@@ -35,6 +35,22 @@ public class QLearning implements ILearning {
 		mProbabilityRandom = new Random();
 		mActionIndexRandom = new Random();
 	}
+	
+	public QLearning(IState[] states, IAction[] actions, double[][] qMatrix) {
+		this.states = states;
+		this.actions = actions;
+		
+		if (qMatrix.length == states.length && qMatrix[0].length == actions.length) {
+			this.qMatrix = qMatrix;
+		} else {
+			buildMatrix();
+		}
+		
+		buildIndices();
+		
+		mProbabilityRandom = new Random();
+		mActionIndexRandom = new Random();
+	}
 
 	private void buildMatrix() {
 		qMatrix = new double[states.length][actions.length];
@@ -95,6 +111,11 @@ public class QLearning implements ILearning {
 
 		double value = q + alpha * (r + gamma * maxQ - q);
 		qMatrix[currentStateIndex][actionIndex] = value;
+	}
+
+	@Override
+	public double[][] getQMatrix() {
+		return qMatrix;
 	}
 	
 /*

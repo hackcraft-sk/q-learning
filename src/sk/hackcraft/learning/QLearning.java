@@ -40,7 +40,7 @@ public class QLearning implements ILearning {
 		this.states = states;
 		this.actions = actions;
 		
-		if (qMatrix.length == states.length && qMatrix[0].length == actions.length) {
+		if (qMatrix != null && qMatrix.length == states.length && qMatrix[0].length == actions.length) {
 			this.qMatrix = qMatrix;
 		} else {
 			buildMatrix();

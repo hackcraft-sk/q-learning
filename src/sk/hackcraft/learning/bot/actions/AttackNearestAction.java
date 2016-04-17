@@ -36,7 +36,7 @@ public class AttackNearestAction extends UnitAction {
 		}
 		
 		Unit closestEnemy = null;
-		double shortestDistance = 999999.9;
+		double shortestDistance = Double.MAX_VALUE;
 		
 		for (Unit setUnit : enemyUnits)
 		{

@@ -1,6 +1,9 @@
 package sk.hackcraft.learning.bot;
 
+import java.util.List;
+
 import bwapi.Game;
+import bwapi.Position;
 import bwapi.Unit;
 import sk.hackcraft.learning.iface.IState;
 
@@ -23,13 +26,35 @@ public class UnitState implements IState {
 	
 	public boolean isUnitInIt(Game game, Unit unit) {
 		int hp = unit.getHitPoints();
-		/*Unit closestEnemy = game.getEnemyUnits().pick(new NearestPicker(unit));
-		double distance = closestEnemy == null ? Integer.MAX_VALUE-1 : closestEnemy.getDistance(unit);
-		int enemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1 : closestEnemy.getHitPoints();*/
 		
-		return	hp >= lifeFrom && hp < lifeTo/* &&
+		final List<Unit> enemyUnits = game.getAllUnits();
+		final List<Unit> myUnits = game.self().getUnits();
+		
+		for (Unit myUnit : myUnits) {
+			enemyUnits.remove(myUnit);
+		}
+		
+		Unit closestEnemy = null;
+		double shortestDistance = Double.MAX_VALUE;
+		
+		for (Unit setUnit : enemyUnits)
+		{
+			Position position = unit.getPosition();
+			double distance = setUnit.getDistance(position);
+			
+			if (distance < shortestDistance)
+			{
+				shortestDistance = distance;
+				closestEnemy = setUnit;
+			}
+		}
+		
+		double distance = closestEnemy == null ? Integer.MAX_VALUE-1 : closestEnemy.getDistance(unit);
+		int enemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1 : closestEnemy.getHitPoints();
+		
+		return	hp >= lifeFrom && hp < lifeTo &&
 				distance >= closestEnemyDistanceFrom && distance < closestEnemyDistanceTo &&
-				enemyHp >= closestEnemyLifeFrom && enemyHp < closestEnemyLifeTo*/;
+				enemyHp >= closestEnemyLifeFrom && enemyHp < closestEnemyLifeTo;
 	}
 	
 	public double getValue(Game game, Unit unit) {

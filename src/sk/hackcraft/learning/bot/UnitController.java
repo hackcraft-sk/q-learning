@@ -57,7 +57,7 @@ public class UnitController {
 		return lastState == null || game.getFrameCount() >= possibleStateChangeFrame;
 	}
 	
-	private UnitState detectState(Game game) {
+	private UnitState detectState(Game game) { // TODO build state instead of searching in array
 		for(UnitState state : states) {
 			if(state.isUnitInIt(game, unit)) {
 				return state;

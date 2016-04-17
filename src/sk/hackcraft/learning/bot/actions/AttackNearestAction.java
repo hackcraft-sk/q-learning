@@ -28,12 +28,7 @@ public class AttackNearestAction extends UnitAction {
 			unit.attack(closestEnemy, false);
 		}*/
 		
-		final List<Unit> enemyUnits = game.getAllUnits();
-		final List<Unit> myUnits = game.self().getUnits();
-		
-		for (Unit myUnit : myUnits) {
-			enemyUnits.remove(myUnit);
-		}
+		final List<Unit> enemyUnits = game.enemy().getUnits();
 		
 		Unit closestEnemy = null;
 		double shortestDistance = Double.MAX_VALUE;

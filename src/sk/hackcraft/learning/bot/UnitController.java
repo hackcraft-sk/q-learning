@@ -37,11 +37,15 @@ public class UnitController {
 			statistics.print("Current state "+currentState);
 			
 			if(lastState != null) {
-				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit);
-				learning.experience(lastState, executingAction, currentState, reward);
+				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit); // TODO why is reward always 0
+				if (reward != 0) {
+					learning.experience(lastState, executingAction, currentState, reward);
+					statistics.print("Learned...");
+				} else {
+					statistics.print("Nothing to learned...");
+				}
 			}
 			
-			statistics.print("Learned...");
 			
 			executingAction = (UnitAction)learning.estimateBestActionIn(currentState);
 			statistics.print(lastState+" -> "+currentState+" ACT: "+executingAction);

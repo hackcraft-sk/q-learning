@@ -20,7 +20,7 @@ public class QLearning implements ILearning {
 	
 	//private int[][] rewardMatrix; 					// rewards of states and action
 
-	private HashMap<IState, Integer> stateIndices = new HashMap<>(); 
+	private HashMap<String, Integer> stateIndices = new HashMap<>(); 
 	private HashMap<IAction, Integer> actionIndices = new HashMap<>();
 	
 	private final Random mProbabilityRandom;
@@ -59,7 +59,7 @@ public class QLearning implements ILearning {
 	// index´s for states and actions
 	private void buildIndices() {
 		for (int i = 0; i < states.length; i++) {
-			stateIndices.put(states[i], i);
+			stateIndices.put(states[i].getHashCode(), i);
 		}
 		for (int i = 0; i < actions.length; i++) {
 			actionIndices.put(actions[i], i);
@@ -78,7 +78,7 @@ public class QLearning implements ILearning {
 	
 	@Override
 	public IAction estimateBestActionIn(IState state) {
-		int stateIndex = stateIndices.get(state);
+		int stateIndex = stateIndices.get(state.getHashCode());
 		int bestActionIndex = -1;
 		double maxValue = Double.MIN_VALUE;
 
@@ -91,7 +91,7 @@ public class QLearning implements ILearning {
 			}
 		}
 		
-		if (mProbabilityRandom.nextDouble() >= gamma) {
+		if (mProbabilityRandom.nextDouble() >= 0.9) {
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
 		
@@ -99,8 +99,8 @@ public class QLearning implements ILearning {
 	}
 
 	public void experience(IState currentState, IAction action, IState nextState, double reward) {
-		int currentStateIndex = stateIndices.get(currentState);
-		int nextStateIndex = stateIndices.get(nextState);
+		int currentStateIndex = stateIndices.get(currentState.getHashCode());
+		int nextStateIndex = stateIndices.get(nextState.getHashCode());
 		int actionIndex = actionIndices.get(action);
 		
 		// Using this possible action, consider to go to the next state

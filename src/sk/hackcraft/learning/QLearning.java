@@ -3,6 +3,7 @@ package sk.hackcraft.learning;
 import java.util.HashMap;
 import java.util.Random;
 
+import sk.hackcraft.learning.bot.UnitState;
 import sk.hackcraft.learning.iface.IAction;
 import sk.hackcraft.learning.iface.ILearning;
 import sk.hackcraft.learning.iface.IState;
@@ -90,11 +91,10 @@ public class QLearning implements ILearning {
 				bestActionIndex = actionIndex;
 			}
 		}
-		
-		if (mProbabilityRandom.nextDouble() >= 0.9) {
+		/////////
+		if (mProbabilityRandom.nextDouble() >= 0.85) {
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
-		
 		return actions[bestActionIndex];
 	}
 

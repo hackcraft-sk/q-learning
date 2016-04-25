@@ -13,15 +13,12 @@ public class FleeToCenterAction extends UnitAction {
 		int x = 0;
 		int y = 0;
 		int unitCount = game.self().getUnits().size();
-		if (unit.isUnderAttack()) {
 			for (Unit e : game.self().getUnits()) {
 				x += e.getPosition().getX();
 				y += e.getPosition().getY();
 			}
 			Position position = new Position(x/unitCount, y/unitCount);
 			unit.move(position);
-		}
-
 	}
 
 	@Override

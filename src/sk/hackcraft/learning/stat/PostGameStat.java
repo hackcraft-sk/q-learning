@@ -1,5 +1,7 @@
 package sk.hackcraft.learning.stat;
 
+import java.util.LinkedList;
+
 import sk.hackcraft.learning.pers.FileIO;
 
 public class PostGameStat {
@@ -9,10 +11,18 @@ public class PostGameStat {
 	private double lifeDifference;
 	private double unitDifference;
 	private double sum;
+	private LinkedList<Double> Last10Percent[];
+	private double Last10PercentStats[];
 
 	private FileIO fileIO = null;
 
 	public PostGameStat(String fileName) {
+		Last10Percent = new LinkedList[5];
+		Last10PercentStats = new double[5];
+		for(int i=0;i<Last10Percent.length;i++)
+		{
+			Last10Percent[i] = new LinkedList<>();
+		}
 		fileIO = new FileIO(fileName);
 		frameCount = 0;
 		win = 0;
@@ -22,24 +32,21 @@ public class PostGameStat {
 		sum = 0;
 	}
 
-	private void saveToFile(String ... postStats) {
+	private void saveToFile(String... postStats) {
 		fileIO.saveToFile(postStats);
 	}
-	
+
 	public void loadFromFile() {
-		double loaded[] = fileIO.loadFromFileStats();
+		LinkedList<double[]> loaded = fileIO.loadFromFileStats();
 		if (loaded == null) {
 			return;
 		}
-		frameCount = loaded[0];
-		win = loaded[1];
-		loose = loaded[2];
-		lifeDifference = loaded[3];
-		unitDifference = loaded[4];
-		sum = loaded[5];
+		for (int i = 0; i < loaded.size(); i++) {
+			add(loaded.get(i)[0], loaded.get(i)[1] > loaded.get(i)[2], loaded.get(i)[3], loaded.get(i)[4],false);
+		}
 	}
 
-	public void add(double fc, boolean w, double ld, double ud) {
+	public void add(double fc, boolean w, double ld, double ud, boolean writeToFile) {
 		sum++;
 		if (w == true) {
 			win++;
@@ -49,15 +56,65 @@ public class PostGameStat {
 		frameCount += fc;
 		lifeDifference += ld;
 		unitDifference += ud;
-		saveToFile(String.valueOf(fc),
-				String.valueOf((w) ? 1 : 0),
-				String.valueOf((w) ? 0 : 1),
-				String.valueOf(ld),
-				String.valueOf(ud));
+		if (writeToFile) {
+			saveToFile(String.valueOf(fc), String.valueOf((w) ? 1 : 0), String.valueOf((w) ? 0 : 1), String.valueOf(ld),
+					String.valueOf(ud));
+		}
+		if (((int)(sum * 0.1) < Last10Percent[0].size())) {
+			for (int i = 0; i < Last10Percent.length; i++) {
+				Last10PercentStats[i] -= Last10Percent[i].removeFirst();
+			}
+		}
+		Last10Percent[0].add(fc);
+		Last10PercentStats[0] += fc;
+		Last10Percent[1].add(w ? 1.0 : 0.0);
+		Last10PercentStats[1] += (w ? 1.0 : 0.0);
+		Last10Percent[2].add(w ? 0.0 : 1.0);
+		Last10PercentStats[2] += (w ? 0.0 : 1.0);
+		Last10Percent[3].add(ld);
+		Last10PercentStats[3] += ld;
+		Last10Percent[4].add(ud);
+		Last10PercentStats[4] += ud;
+	}
+
+	public double[] getLast10PercentStats() {
+		double mean[] = new double[Last10PercentStats.length];
+		double c = Last10Percent[0].size();
+			mean[0] = Last10PercentStats[0] / c;
+			mean[1] = Last10PercentStats[1];
+			mean[2] = Last10PercentStats[2];
+			mean[3] = Last10PercentStats[3] / c;
+			mean[4] = Last10PercentStats[4] / c;
+			for(int i=0;i<mean.length;i++)
+			{
+				mean[i] = mean[i]*100;
+				mean[i] = Math.round(mean[i]);
+				mean[i] = mean[i] / 100;
+			}
+		return mean;
+	}
+
+	public double[] getTrend() {
+		double trend[] = new double[Last10PercentStats.length - 2];
+		trend[0] = Last10PercentStats[0]/Last10Percent[0].size() - getFrameCount();
+		trend[1] = Last10PercentStats[3]/Last10Percent[0].size() - getLifeDifference();
+		trend[2] = Last10PercentStats[4]/Last10Percent[0].size() - getUnitDifference();
+		for(int i=0;i<trend.length;i++)
+		{
+			trend[i] = trend[i]*100;
+			trend[i] = Math.round(trend[i]);
+			trend[i] = trend[i] / 100;
+		}
+		return trend;
+
 	}
 
 	public double getFrameCount() {
-		return frameCount/sum;
+		double ret = frameCount / sum;
+		ret = ret*100;
+		ret = Math.round(ret);
+		ret = ret / 100;
+		return ret;
 	}
 
 	public double getWin() {
@@ -69,10 +126,18 @@ public class PostGameStat {
 	}
 
 	public double getLifeDifference() {
-		return lifeDifference/sum;
+		double ret = lifeDifference / sum;
+		ret = ret*100;
+		ret = Math.round(ret);
+		ret = ret / 100;
+		return ret;
 	}
 
 	public double getUnitDifference() {
-		return unitDifference/sum;
+		double ret = unitDifference / sum;
+		ret = ret*100;
+		ret = Math.round(ret);
+		ret = ret / 100;
+		return ret;
 	}
 }

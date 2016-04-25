@@ -28,7 +28,7 @@ public class UnitStates {
 									for (int o = 0; o < lifes.length - 1; o++) {
 										for (int p = 0; p < powers.length - 1; p++) {
 											for (int q = 0; q < distances.length - 1; q++) {
-												String hashCode = "" + i + j
+												String hashCode = "" + i + x + j
 														+ k + l + m + n + o + p
 														+ q;
 												result.add(new UnitState(

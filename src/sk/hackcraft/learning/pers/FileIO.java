@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class FileIO {
 	private final String FILE_NAME;
@@ -124,24 +125,23 @@ public class FileIO {
 		return null;
 	}
 
-	public double[] loadFromFileStats() {
+	public LinkedList<double[]> loadFromFileStats() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME));
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(
+					FILE_NAME));
 			String line = null;
 			final String defLine = bufferedReader.readLine();
 			if (defLine != null) {
-				double[] result = new double[6];
-
-				int rowCounter = 0;
+				LinkedList<double[]> result = new LinkedList<>();
+				double[] tmp = new double[5];
 				while ((line = bufferedReader.readLine()) != null) {
 					String[] lineArray = line.split(TAB_SEPARATOR);
 					for (int i = 0; i < lineArray.length; i++) {
-						result[i] += Double.parseDouble(lineArray[i]);
+						tmp[i] = Double.parseDouble(lineArray[i]);
 					}
-
-					rowCounter++;
+					result.add(new double [] {tmp[0],tmp[1],tmp[2],tmp[3],tmp[4]});
 				}
-				result[5] = rowCounter;
+				
 				return result;
 			}
 		} catch (IOException e) {

@@ -1,53 +1,27 @@
 package sk.hackcraft.learning.bot.actions;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import bwapi.Game;
-import bwapi.Position;
-import bwapi.Unit;
 import sk.hackcraft.learning.bot.UnitAction;
-import sk.hackcraft.learning.bot.selection.NearestPicker;
-import sk.hackcraft.learning.bot.selection.Units;
+import bwapi.Game;
+import bwapi.Unit;
 
 public class AttackNearestAction extends UnitAction {
 
 	@Override
 	public void executeOn(Game game, Unit unit) {
-		/*final Units enemyUnits = new Units(game.getAllUnits()).minus(new Units(game.self().getUnits()));
 
-		final NearestPicker nearestPicker = new NearestPicker(unit);
-		final Unit closestEnemy = nearestPicker.pickFrom(enemyUnits);
-		
-		if(closestEnemy == null) {
-			if(unit.isIdle()) {
-				unit.attack(closestEnemy);
+		if (!game.enemy().getUnits().isEmpty()) {
+			Unit closestEnemy = null;
+			for (Unit enemy : game.enemy().getUnits()) {
+				if (closestEnemy == null
+						|| unit.getDistance(enemy) < unit
+								.getDistance(closestEnemy)) {
+					closestEnemy = enemy;
+				}
 			}
-		} else {
-			unit.attack(closestEnemy, false);
-		}*/
-		
-		final List<Unit> enemyUnits = game.enemy().getUnits();
-		
-		Unit closestEnemy = null;
-		double shortestDistance = Double.MAX_VALUE;
-		
-		for (Unit setUnit : enemyUnits)
-		{
-			Position position = unit.getPosition();
-			double distance = setUnit.getDistance(position);
-			
-			if (distance < shortestDistance)
-			{
-				shortestDistance = distance;
-				closestEnemy = setUnit;
-			}
+			unit.attack(closestEnemy.getPosition());
 		}
-		
-		if(closestEnemy != null) {
-			unit.attack(closestEnemy, false);
-		}
+
 	}
 	
 	@Override

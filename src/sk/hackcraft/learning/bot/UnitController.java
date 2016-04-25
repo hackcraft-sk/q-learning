@@ -1,8 +1,12 @@
 package sk.hackcraft.learning.bot;
 
 import bwapi.Game;
+import bwapi.Position;
 import bwapi.Unit;
+import sk.hackcraft.learning.bot.selection.NearestPicker;
+import sk.hackcraft.learning.bot.selection.WoundedPicker;
 import sk.hackcraft.learning.iface.ILearning;
+import sk.hackcraft.learning.iface.IState;
 import sk.hackcraft.learning.stat.Statistics;
 
 public class UnitController {
@@ -16,6 +20,7 @@ public class UnitController {
 	private Unit unit;
 	
 	private UnitState lastState = null;
+	private double lastStateValue;
 
 	private UnitAction executingAction = null;
 	
@@ -37,7 +42,7 @@ public class UnitController {
 			statistics.print("Current state "+currentState);
 			
 			if(lastState != null) {
-				double reward = currentState.getValue(game, unit) - lastState.getValue(game, unit); // TODO why is reward always 0
+				double reward = currentState.getValue(game, unit) - lastStateValue; // TODO why is reward always 0
 				if (reward != 0) {
 					learning.experience(lastState, executingAction, currentState, reward);
 					statistics.print("Learned...");
@@ -50,6 +55,7 @@ public class UnitController {
 			executingAction = (UnitAction)learning.estimateBestActionIn(currentState);
 			statistics.print(lastState+" -> "+currentState+" ACT: "+executingAction);
 			lastState = currentState;
+			lastStateValue = currentState.getValue(game, unit);
 
 			statistics.print("ACTION: " + executingAction.toString());
 			executingAction.executeOn(game, unit);
@@ -62,11 +68,192 @@ public class UnitController {
 	}
 	
 	private UnitState detectState(Game game) { // TODO build state instead of searching in array
-		for(UnitState state : states) {
-			if(state.isUnitInIt(game, unit)) {
-				return state;
+		int lifeFrom = 0, lifeTo = 0;
+		
+		int underAttack = 0;
+		
+		double armyLifeRatioFrom = 0, armyLifeRationTo = 0;
+		
+		double closestEnemyDistanceFrom = 0, closestEnemyDistanceTo = 0;
+		
+		int closestEnemyLifeFrom = 0, closestEnemyLifeTo = 0;
+		
+		double closestArmyLifeRatioFrom = 0, closestArmyLifeRatioTo = 0;
+		
+		double mostWoundedEnemyDistanceFrom = 0, mostWoundedEnemyDistanceTo = 0;
+		
+		int mostWoundedEnemyLifeFrom = 0, mostWoundedEnemyLifeTo = 0;
+		
+		double mostWoundedArmyLifeRatioFrom = 0, mostWoundedArmyLifeRatioTo = 0;
+		
+		double groupCenterDinstanceFrom = 0, groupCenterDistanceTo = 0;
+		
+		int [] lifes = UnitStates.getLifesIntervals();
+		int [] distances = UnitStates.getDistancesIntervals();
+		double [] powers = UnitStates.getPowerIntervals();
+		
+		//LIFE
+		int hp = unit.getHitPoints()/unit.getType().maxHitPoints()*100;
+		//
+		
+		//UNDER ATTACK
+		underAttack = unit.isUnderAttack() ? 1:0;
+				
+		//ARMY LIFE RATIO
+		int groupHp = 0;
+		for (Unit u : game.self().getUnits()) {
+			groupHp += u.getHitPoints();
+		}
+				
+		int enemyGroupHp = 0;
+		for (Unit u : game.enemy().getUnits()) {
+			enemyGroupHp += u.getHitPoints();
+		}
+		
+		double armyLifeRatio = 1;
+		if (enemyGroupHp != 0) {
+			armyLifeRatio = groupHp/enemyGroupHp;
+		}
+		//
+		
+		//CLOSEST ENEMY DISTANCE
+		Unit closestEnemy = (new NearestPicker(unit).pickFrom(game.enemy().getUnits()));
+		double cEnemyDistance = closestEnemy == null ? Integer.MAX_VALUE-1 : closestEnemy.getDistance(unit);
+		//
+		
+		//CLOSEST ENEMY HP
+		int cEnemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1 : (closestEnemy.getHitPoints()/closestEnemy.getType().maxHitPoints()*100);
+		//
+		
+		//CLOSEST ARMY HP RATIO
+		groupHp = 0;
+		for (Unit u : game.self().getUnits()) {
+			if (unit.getDistance(u) <= unit.getType().sightRange()) {
+				groupHp += u.getHitPoints();
+			}			
+		}
+				
+		enemyGroupHp = 0;
+		for (Unit u : game.enemy().getUnits()) {
+			if (closestEnemy.getDistance(u) <= unit.getType().sightRange()) {
+				enemyGroupHp += u.getHitPoints();
 			}
 		}
-		throw new IllegalStateException("Unit has no detected state");
+		
+		double cArmyLifeRatio = 1;
+		if (enemyGroupHp != 0) {
+			cArmyLifeRatio = groupHp/enemyGroupHp;
+		}	
+		//
+	
+		//MOST WOUNDED ENEMY DISTANCE
+		Unit mostWoundedEnemy = (new WoundedPicker().pickFrom(game.enemy().getUnits()));
+		double mwEnemyDistance = mostWoundedEnemy == null ? Integer.MAX_VALUE-1 : mostWoundedEnemy.getDistance(unit);
+		//
+		
+		//MOST WOUNDED ENEMY HP
+		int mwEnemyHp = mostWoundedEnemy == null ? Integer.MAX_VALUE - 1 : (mostWoundedEnemy.getHitPoints()/mostWoundedEnemy.getType().maxHitPoints()*100);
+		//
+		
+		//MOST WOUNDED ARMY HP RATIO
+		groupHp = 0;
+		for (Unit u : game.self().getUnits()) {
+			if (unit.getDistance(u) <= unit.getType().sightRange()) {
+				groupHp += u.getHitPoints();
+			}			
+		}
+				
+		enemyGroupHp = 0;
+		for (Unit u : game.enemy().getUnits()) {
+			if (mostWoundedEnemy.getDistance(u) <= unit.getType().sightRange()) {
+				enemyGroupHp += u.getHitPoints();
+			}
+		}
+		
+		double mwArmyLifeRatio = 1;
+		if (enemyGroupHp != 0) {
+			mwArmyLifeRatio = groupHp/enemyGroupHp;
+		}
+		//
+		
+		//GROUP CENTER DISTANCE
+		int gCenterX = 0;
+		int gCenterY = 0;
+		int unitCount = game.self().getUnits().size();
+			for (Unit e : game.self().getUnits()) {
+				gCenterX += e.getPosition().getX();
+				gCenterY += e.getPosition().getY();
+			}
+		Position gCenter = new Position(gCenterX/unitCount, gCenterY/unitCount);
+		double gCenterDistance = unit.getDistance(gCenter);
+		//
+		
+		///////////////////////////////////////////////////////////////////////////////////////////
+		String hashCode = "";
+		
+		for (int i=1; i<lifes.length; i++) {
+			if (hp >= lifes[i-1] && hp < lifes[i]) {
+				lifeFrom = lifes[i-1];
+				lifeTo = lifes[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<powers.length; i++) {
+			if (armyLifeRatio >= powers[i-1] && armyLifeRatio < powers[i]) {
+				armyLifeRatioFrom = powers[i-1];
+				armyLifeRationTo = powers[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<distances.length; i++) {
+			if (cEnemyDistance >= distances[i-1] && cEnemyDistance < distances[i]) {
+				closestEnemyDistanceFrom = distances[i-1];
+				closestEnemyDistanceTo = distances[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<lifes.length; i++) {
+			if (cEnemyHp >= lifes[i-1] && cEnemyHp < lifes[i]) {
+				closestEnemyLifeFrom = lifes[i-1];
+				closestEnemyLifeTo = lifes[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<powers.length; i++) {
+			if (cArmyLifeRatio >= powers[i-1] && cArmyLifeRatio < powers[i]) {
+				closestArmyLifeRatioFrom = powers[i-1];
+				closestArmyLifeRatioTo = powers[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<distances.length; i++) {
+			if (mwEnemyDistance >= distances[i-1] && mwEnemyDistance < distances[i]) {
+				mostWoundedEnemyDistanceFrom = distances[i-1];
+				mostWoundedEnemyDistanceTo = distances[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<lifes.length; i++) {
+			if (mwEnemyHp >= lifes[i-1] && mwEnemyHp < lifes[i]) {
+				mostWoundedEnemyLifeFrom = lifes[i-1];
+				mostWoundedEnemyLifeTo = lifes[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<powers.length; i++) {
+			if (mwArmyLifeRatio >= powers[i-1] && mwArmyLifeRatio < powers[i]) {
+				mostWoundedArmyLifeRatioFrom = powers[i-1];
+				mostWoundedArmyLifeRatioTo = powers[i];
+				hashCode += (i-1);
+			}
+		}
+		for (int i=1; i<distances.length; i++) {
+			if (gCenterDistance >= distances[i-1] && gCenterDistance < distances[i]) {
+				groupCenterDinstanceFrom = distances[i-1];
+				groupCenterDistanceTo = distances[i];
+				hashCode += (i-1);
+			}
+		}
+		return new UnitState(hashCode, lifeFrom, lifeTo, underAttack, armyLifeRatioFrom, armyLifeRationTo, closestEnemyDistanceFrom, closestEnemyDistanceTo, closestEnemyLifeFrom, closestEnemyLifeTo, closestArmyLifeRatioFrom, closestArmyLifeRatioTo, mostWoundedEnemyDistanceFrom, mostWoundedEnemyDistanceTo, mostWoundedEnemyLifeFrom, mostWoundedEnemyLifeTo, mostWoundedArmyLifeRatioFrom, mostWoundedArmyLifeRatioTo, groupCenterDinstanceFrom, groupCenterDistanceTo);
 	}
 }

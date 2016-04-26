@@ -19,7 +19,7 @@ public class UnitStates {
 		double[] powers = list(powerResolution, maxPower);
 		
 		for (int i = 0; i < lifes.length - 1; i++) {
-			for (int x = 0; x < 2; x++) {
+			for (int attack = 0; attack < 2; attack++) {
 				for (int j = 0; j < powers.length - 1; j++) {
 					for (int k = 0; k < distances.length - 1; k++) {
 						for (int l = 0; l < lifes.length - 1; l++) {
@@ -28,26 +28,19 @@ public class UnitStates {
 									for (int o = 0; o < lifes.length - 1; o++) {
 										for (int p = 0; p < powers.length - 1; p++) {
 											for (int q = 0; q < distances.length - 1; q++) {
-												String hashCode = "" + i + x + j
-														+ k + l + m + n + o + p
-														+ q;
+												String hashCode = "" + i + attack + j + k + l + m + n + o + p + q;
 												result.add(new UnitState(
-														hashCode, lifes[i],
-														lifes[i + 1], x,
-														powers[j],
-														powers[j + 1],
-														distances[k],
-														distances[k + 1],
+														hashCode, 
+														lifes[i], lifes[i + 1], 
+														attack,
+														powers[j], powers[j + 1],
+														distances[k], distances[k + 1],
 														lifes[l], lifes[l + 1],
-														powers[m],
-														powers[m + 1],
-														distances[n],
-														distances[n + 1],
+														powers[m], powers[m + 1],
+														distances[n], distances[n + 1],
 														lifes[o], lifes[o + 1],
-														powers[p],
-														powers[p + 1],
-														distances[q],
-														distances[q + 1]));
+														powers[p], powers[p + 1],
+														distances[q], distances[q + 1]));
 											}
 										}
 									}

@@ -6,7 +6,7 @@ import sk.hackcraft.learning.iface.IState;
 
 public class UnitState implements IState {
 
-	private String hashCode;
+	private String code;
 
 	private int lifeFrom, lifeTo;
 
@@ -35,7 +35,7 @@ public class UnitState implements IState {
 			double mostWoundedEnemyDistanceTo, int mostWoundedEnemyLifeFrom, int mostWoundedEnemyLifeTo,
 			double mostWoundedArmyLifeRatioFrom, double mostWoundedArmyLifeRatioTo, double groupCenterDinstanceFrom,
 			double groupCenterDistanceTo) {
-		this.hashCode = hashCode;
+		this.code = hashCode;
 		this.lifeFrom = lifeFrom;
 		this.lifeTo = lifeTo;
 		this.underAttack = underAttack;
@@ -58,8 +58,16 @@ public class UnitState implements IState {
 	}
 
 	@Override
-	public String getHashCode() {
-		return hashCode;
+	public int hashCode() {
+		return code.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+	
+		UnitState us = (UnitState) o;		
+		return code.equals(us.code);
 	}
 
 	public double getValue(Game game, Unit unit) {
@@ -82,7 +90,7 @@ public class UnitState implements IState {
 
 	@Override
 	public String toString() {
-		return ("State " + hashCode + " [" + "life[" + lifeFrom + "," + lifeTo + "] " + "underA[" + underAttack + "] "
+		return ("State " + code + " [" + "life[" + lifeFrom + "," + lifeTo + "] " + "underA[" + underAttack + "] "
 				+ "aLife[" + armyLifeRatioFrom + "," + armyLifeRationTo + "] "
 				+ "ceDis[" + (int) closestEnemyDistanceFrom + "," + (int) closestEnemyDistanceTo + "] " + "ceLife["
 				+ closestEnemyLifeFrom + "," + closestEnemyLifeTo + "] " + "caLife[" + closestArmyLifeRatioFrom + ","

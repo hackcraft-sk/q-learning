@@ -68,8 +68,8 @@ public class UnitController {
 		return lastState == null || game.getFrameCount() >= possibleStateChangeFrame;
 	}
 
-	private UnitState detectState(Game game) { // TODO build state instead of
-												// searching in array
+	private UnitState detectState(Game game) {
+		
 		int lifeFrom = 0, lifeTo = 0;
 
 		int underAttack = 0;
@@ -196,73 +196,73 @@ public class UnitController {
 		//
 
 		///////////////////////////////////////////////////////////////////////////////////////////
-		String hashCode = "";
+		String code = "";
 
 		for (int i = 1; i < lifes.length; i++) {
 			if (hp >= lifes[i - 1] && hp < lifes[i]) {
 				lifeFrom = lifes[i - 1];
 				lifeTo = lifes[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
-		hashCode += underAttack;
+		code += underAttack;
 		for (int i = 1; i < powers.length; i++) {
 			if (armyLifeRatio >= powers[i - 1] && armyLifeRatio < powers[i]) {
 				armyLifeRatioFrom = powers[i - 1];
 				armyLifeRationTo = powers[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < distances.length; i++) {
 			if (cEnemyDistance >= distances[i - 1] && cEnemyDistance < distances[i]) {
 				closestEnemyDistanceFrom = distances[i - 1];
 				closestEnemyDistanceTo = distances[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < lifes.length; i++) {
 			if (cEnemyHp >= lifes[i - 1] && cEnemyHp < lifes[i]) {
 				closestEnemyLifeFrom = lifes[i - 1];
 				closestEnemyLifeTo = lifes[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < powers.length; i++) {
 			if (cArmyLifeRatio >= powers[i - 1] && cArmyLifeRatio < powers[i]) {
 				closestArmyLifeRatioFrom = powers[i - 1];
 				closestArmyLifeRatioTo = powers[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < distances.length; i++) {
 			if (mwEnemyDistance >= distances[i - 1] && mwEnemyDistance < distances[i]) {
 				mostWoundedEnemyDistanceFrom = distances[i - 1];
 				mostWoundedEnemyDistanceTo = distances[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < lifes.length; i++) {
 			if (mwEnemyHp >= lifes[i - 1] && mwEnemyHp < lifes[i]) {
 				mostWoundedEnemyLifeFrom = lifes[i - 1];
 				mostWoundedEnemyLifeTo = lifes[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < powers.length; i++) {
 			if (mwArmyLifeRatio >= powers[i - 1] && mwArmyLifeRatio < powers[i]) {
 				mostWoundedArmyLifeRatioFrom = powers[i - 1];
 				mostWoundedArmyLifeRatioTo = powers[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
 		for (int i = 1; i < distances.length; i++) {
 			if (gCenterDistance >= distances[i - 1] && gCenterDistance < distances[i]) {
 				groupCenterDinstanceFrom = distances[i - 1];
 				groupCenterDistanceTo = distances[i];
-				hashCode += (i - 1);
+				code += (i - 1);
 			}
 		}
-		return new UnitState(hashCode, lifeFrom, lifeTo, underAttack,armyLifeRatioFrom, armyLifeRationTo,
+		return new UnitState(code, lifeFrom, lifeTo, underAttack,armyLifeRatioFrom, armyLifeRationTo,
 				closestEnemyDistanceFrom, closestEnemyDistanceTo, closestEnemyLifeFrom, closestEnemyLifeTo,
 				closestArmyLifeRatioFrom, closestArmyLifeRatioTo, mostWoundedEnemyDistanceFrom,
 				mostWoundedEnemyDistanceTo, mostWoundedEnemyLifeFrom, mostWoundedEnemyLifeTo,

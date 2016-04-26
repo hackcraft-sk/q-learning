@@ -10,7 +10,7 @@ import bwapi.Unit;
 import sk.hackcraft.learning.QLearning;
 import sk.hackcraft.learning.bot.actions.AttackMostWoundedAction;
 import sk.hackcraft.learning.bot.actions.AttackNearestAction;
-import sk.hackcraft.learning.bot.actions.AttackWeakestGrupAction;
+import sk.hackcraft.learning.bot.actions.AttackWeakestGroupAction;
 import sk.hackcraft.learning.bot.actions.DoNothingAction;
 import sk.hackcraft.learning.bot.actions.FleeFromEnemyAction;
 import sk.hackcraft.learning.bot.actions.FleeToCenterAction;
@@ -33,9 +33,10 @@ public class Bot extends DefaultBWListener {
 	private Player self;
 
 	private UnitState[] states = UnitStates.build();
-	private UnitAction[] actions = new UnitAction[] { new RunAction(), new AttackMostWoundedAction(),
-			new AttackNearestAction(), new DoNothingAction(), new FleeFromEnemyAction(), new FleeToCenterAction(),
-			new AttackWeakestGrupAction() };
+	private UnitAction[] actions = new UnitAction[] { new RunAction(),
+			new AttackMostWoundedAction(), new AttackNearestAction(),
+			new DoNothingAction(), new FleeFromEnemyAction(),
+			new FleeToCenterAction(), new AttackWeakestGroupAction() };
 
 	private ILearning learning;
 

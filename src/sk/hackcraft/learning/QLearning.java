@@ -3,6 +3,7 @@ package sk.hackcraft.learning;
 import java.util.HashMap;
 import java.util.Random;
 
+import bwapi.Unit;
 import sk.hackcraft.learning.bot.UnitState;
 import sk.hackcraft.learning.iface.IAction;
 import sk.hackcraft.learning.iface.ILearning;
@@ -21,7 +22,7 @@ public class QLearning implements ILearning {
 	
 	//private int[][] rewardMatrix; 					// rewards of states and action
 
-	private HashMap<String, Integer> stateIndices = new HashMap<>(); 
+	private HashMap<IState, Integer> stateIndices = new HashMap<>(); 
 	private HashMap<IAction, Integer> actionIndices = new HashMap<>();
 	
 	private final Random mProbabilityRandom;
@@ -60,7 +61,7 @@ public class QLearning implements ILearning {
 	// index´s for states and actions
 	private void buildIndices() {
 		for (int i = 0; i < states.length; i++) {
-			stateIndices.put(states[i].getHashCode(), i);
+			stateIndices.put(states[i], i);
 		}
 		for (int i = 0; i < actions.length; i++) {
 			actionIndices.put(actions[i], i);
@@ -79,7 +80,7 @@ public class QLearning implements ILearning {
 	
 	@Override
 	public IAction estimateBestActionIn(IState state) {
-		int stateIndex = stateIndices.get(state.getHashCode());
+		int stateIndex = stateIndices.get((UnitState)state);
 		int bestActionIndex = -1;
 		double maxValue = Double.MIN_VALUE;
 
@@ -92,15 +93,15 @@ public class QLearning implements ILearning {
 			}
 		}
 		/////////
-		if (mProbabilityRandom.nextDouble() >= 0.85) {
+		if (mProbabilityRandom.nextDouble() >= 0.97) {
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
 		return actions[bestActionIndex];
 	}
 
 	public void experience(IState currentState, IAction action, IState nextState, double reward) {
-		int currentStateIndex = stateIndices.get(currentState.getHashCode());
-		int nextStateIndex = stateIndices.get(nextState.getHashCode());
+		int currentStateIndex = stateIndices.get(currentState);
+		int nextStateIndex = stateIndices.get(nextState);
 		int actionIndex = actionIndices.get(action);
 		
 		// Using this possible action, consider to go to the next state

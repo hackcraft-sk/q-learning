@@ -127,8 +127,7 @@ public class FileIO {
 
 	public LinkedList<double[]> loadFromFileStats() {
 		try {
-			BufferedReader bufferedReader = new BufferedReader(new FileReader(
-					FILE_NAME));
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME));
 			String line = null;
 			final String defLine = bufferedReader.readLine();
 			if (defLine != null) {

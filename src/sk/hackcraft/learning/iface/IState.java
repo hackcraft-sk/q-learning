@@ -7,8 +7,6 @@ public interface IState {
 	int countOfEnemyUnits = 0;
 	int countOfAlliedUnits = 0;
 	
-	String getHashCode();
-	
 	EDistance distanceOfNearestEnemy = EDistance.OUT_OF_SIGHT;
 	ELifeStatus lifeStatus = ELifeStatus.HIGH;
 }

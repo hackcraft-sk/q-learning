@@ -55,7 +55,7 @@ public class Bot extends DefaultBWListener {
 	public void onStart() {
 		game = mirror.getGame();
 		game.sendText("black sheep wall");
-		game.setLocalSpeed(15);
+		//game.setLocalSpeed(0);
 		self = game.self();
 
 		qMatrixFile = new FileIO("qMatrix.txt");

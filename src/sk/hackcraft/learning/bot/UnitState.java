@@ -13,6 +13,8 @@ public class UnitState implements IState {
 	private int underAttack;
 
 	private double armyLifeRatioFrom, armyLifeRationTo;
+	
+	private double attackingUnitsRatioFrom, attackingUnitsRatioTo;
 
 	private double closestEnemyDistanceFrom, closestEnemyDistanceTo;
 
@@ -28,19 +30,26 @@ public class UnitState implements IState {
 
 	private double groupCenterDinstanceFrom, groupCenterDistanceTo;
 
-	public UnitState(String hashCode, int lifeFrom, int lifeTo, int underAttack,
-			double armyLifeRatioFrom, double armyLifeRationTo, double closestEnemyDistanceFrom,
-			double closestEnemyDistanceTo, int closestEnemyLifeFrom, int closestEnemyLifeTo,
-			double closestArmyLifeRatioFrom, double closestArmyLifeRatioTo, double mostWoundedEnemyDistanceFrom,
-			double mostWoundedEnemyDistanceTo, int mostWoundedEnemyLifeFrom, int mostWoundedEnemyLifeTo,
-			double mostWoundedArmyLifeRatioFrom, double mostWoundedArmyLifeRatioTo, double groupCenterDinstanceFrom,
-			double groupCenterDistanceTo) {
+	public UnitState(String hashCode, 
+			int lifeFrom, int lifeTo, 
+			int underAttack,		
+			double armyLifeRatioFrom, double armyLifeRationTo, 
+			double attackingUnitsRatioFrom, double attackingUnitsRatioTo,
+			double closestEnemyDistanceFrom, double closestEnemyDistanceTo, 
+			int closestEnemyLifeFrom, int closestEnemyLifeTo,
+			double closestArmyLifeRatioFrom, double closestArmyLifeRatioTo, 
+			double mostWoundedEnemyDistanceFrom, double mostWoundedEnemyDistanceTo, 
+			int mostWoundedEnemyLifeFrom, int mostWoundedEnemyLifeTo,
+			double mostWoundedArmyLifeRatioFrom, double mostWoundedArmyLifeRatioTo, 
+			double groupCenterDinstanceFrom, double groupCenterDistanceTo) {
 		this.code = hashCode;
 		this.lifeFrom = lifeFrom;
 		this.lifeTo = lifeTo;
-		this.underAttack = underAttack;
+		this.underAttack = underAttack;	
 		this.armyLifeRatioFrom = armyLifeRatioFrom;
 		this.armyLifeRationTo = armyLifeRationTo;
+		this.attackingUnitsRatioFrom = attackingUnitsRatioFrom;
+		this.attackingUnitsRatioTo = attackingUnitsRatioTo;
 		this.closestEnemyDistanceFrom = closestEnemyDistanceFrom;
 		this.closestEnemyDistanceTo = closestEnemyDistanceTo;
 		this.closestEnemyLifeFrom = closestEnemyLifeFrom;
@@ -90,8 +99,9 @@ public class UnitState implements IState {
 
 	@Override
 	public String toString() {
-		return ("State " + code + " [" + "life[" + lifeFrom + "," + lifeTo + "] " + "underA[" + underAttack + "] "
+		return ("State " + code + " [" + "life[" + lifeFrom + "," + lifeTo + "] " + "underA[" + underAttack + "] "			
 				+ "aLife[" + armyLifeRatioFrom + "," + armyLifeRationTo + "] "
+				+ "atkUnits[" + attackingUnitsRatioFrom + "," + attackingUnitsRatioTo + "] "
 				+ "ceDis[" + (int) closestEnemyDistanceFrom + "," + (int) closestEnemyDistanceTo + "] " + "ceLife["
 				+ closestEnemyLifeFrom + "," + closestEnemyLifeTo + "] " + "caLife[" + closestArmyLifeRatioFrom + ","
 				+ closestArmyLifeRatioTo + "] " + "mweDis[" + (int) mostWoundedEnemyDistanceFrom + ","

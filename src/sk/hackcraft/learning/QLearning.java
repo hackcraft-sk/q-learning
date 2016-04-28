@@ -93,7 +93,7 @@ public class QLearning implements ILearning {
 			}
 		}
 		/////////
-		if (mProbabilityRandom.nextDouble() >= 0.97) {
+		if (mProbabilityRandom.nextDouble() >= 1) {
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
 		return actions[bestActionIndex];

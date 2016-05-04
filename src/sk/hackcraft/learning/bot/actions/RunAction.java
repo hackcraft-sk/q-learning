@@ -1,27 +1,30 @@
 package sk.hackcraft.learning.bot.actions;
 
+import java.util.Random;
+
 import bwapi.Game;
+import bwapi.Position;
 import bwapi.Unit;
 import sk.hackcraft.learning.bot.UnitAction;
-import sk.hackcraft.learning.bot.math.Vector2D;
-import sk.hackcraft.learning.bot.math.Vector2DMath;
-import sk.hackcraft.learning.bot.selection.Units;
 
 public class RunAction extends UnitAction {
 
 	@Override
 	public void executeOn(Game game, Unit unit) {
-		final Units enemyUnits = new Units(game.getAllUnits()).minus(new Units(game.self().getUnits()));
-		if(!enemyUnits.isEmpty()) {
-			if(unit.isIdle()) {
-				Vector2D enemyPosition = enemyUnits.getArithmeticCenter();
-				Vector2D myPosition = Vector2DMath.toVector(unit.getPosition());
-				
-				Vector2D runPosition = myPosition.sub(enemyPosition).add(myPosition);
-				
-				unit.move(runPosition.toPosition(), false);
-			}
-		}
+		Random rand = new Random();
+
+		
+			int mapWidht = game.mapWidth() * 32;
+			int mapHeight = game.mapWidth() * 32;
+
+			int x = unit.getPosition().getX()
+					+ (rand.nextInt(mapWidht / 2) - (mapWidht / 4));
+			int y = unit.getPosition().getY()
+					+ (rand.nextInt(mapHeight / 2) - (mapHeight / 4));
+
+			unit.move(new Position(x, y));
+		
+
 	}
 	
 	@Override

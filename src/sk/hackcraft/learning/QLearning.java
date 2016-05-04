@@ -3,6 +3,8 @@ package sk.hackcraft.learning;
 import java.util.HashMap;
 import java.util.Random;
 
+import bwapi.Unit;
+import sk.hackcraft.learning.bot.UnitState;
 import sk.hackcraft.learning.iface.IAction;
 import sk.hackcraft.learning.iface.ILearning;
 import sk.hackcraft.learning.iface.IState;
@@ -78,7 +80,7 @@ public class QLearning implements ILearning {
 	
 	@Override
 	public IAction estimateBestActionIn(IState state) {
-		int stateIndex = stateIndices.get(state);
+		int stateIndex = stateIndices.get((UnitState)state);
 		int bestActionIndex = -1;
 		double maxValue = Double.MIN_VALUE;
 
@@ -90,11 +92,11 @@ public class QLearning implements ILearning {
 				bestActionIndex = actionIndex;
 			}
 		}
-		
-		if (mProbabilityRandom.nextDouble() >= gamma) {
+		/////////
+		if (mProbabilityRandom.nextDouble() >= 0.9)
+		{
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
-		
 		return actions[bestActionIndex];
 	}
 
@@ -117,9 +119,4 @@ public class QLearning implements ILearning {
 	public double[][] getQMatrix() {
 		return qMatrix;
 	}
-	
-/*
-	protected double getReward(int state, int action) {
-		return rewardMatrix[state][action];
-	}*/
 }

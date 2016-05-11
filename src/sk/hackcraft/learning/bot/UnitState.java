@@ -81,17 +81,26 @@ public class UnitState implements IState {
 
 	public double getValue(Game game, Unit unit) {
 		double value = 0;
-
+		int pau = 0;
 		if (game.enemy().getUnits().isEmpty()) {
 			return value;
 		}
 
 		for (Unit myUnit : game.self().getUnits()) {
 			value += myUnit.getHitPoints() + myUnit.getShields();
+			if (myUnit.isAttacking()) {
+				pau++;
+			}
+			value +=200;
 		}
 
 		for (Unit enemyUnit : game.enemy().getUnits()) {
 			value -= enemyUnit.getHitPoints() + enemyUnit.getShields();
+			value -= 200;
+		}
+
+		if (value >= 0) {
+			value += 40 * pau;
 		}
 
 		return value;

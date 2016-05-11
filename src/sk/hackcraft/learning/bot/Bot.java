@@ -55,7 +55,7 @@ public class Bot extends DefaultBWListener {
 	public void onStart() {
 		game = mirror.getGame();
 		game.sendText("black sheep wall");
-		//game.setLocalSpeed(0);
+		game.setLocalSpeed(0);		/*!!!!!!!*/
 		self = game.self();
 
 		qMatrixFile = new FileIO("qMatrix.txt");
@@ -106,8 +106,10 @@ public class Bot extends DefaultBWListener {
 	@Override
 	public void onEnd(boolean winner) {
 		super.onEnd(winner);
-		qMatrixFile.saveToFile(learning.getQMatrix());
-
+		qMatrixFile.saveToFile(learning.getQMatrix());	
+		for (Unit unit : self.getUnits()) {
+			controllers.get(unit).updateOnEnd(game);
+		}
 		int groupHp = 0;
 		for (Unit u : game.self().getUnits()) {
 			groupHp += u.getHitPoints() + u.getShields();

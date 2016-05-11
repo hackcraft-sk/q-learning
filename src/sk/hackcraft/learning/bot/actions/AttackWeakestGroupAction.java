@@ -1,5 +1,6 @@
 package sk.hackcraft.learning.bot.actions;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import bwapi.Game;
@@ -14,7 +15,7 @@ public class AttackWeakestGroupAction extends UnitAction {
 
 		if (!game.enemy().getUnits().isEmpty()) {
 			Unit closestEnemy = null;
-			LinkedList<Unit> units[] = new LinkedList[game.enemy().getUnits().size()];
+			ArrayList<Unit> units[] = new ArrayList[game.enemy().getUnits().size()];
 			double hp[] = new double[units.length];
 			int min = 0;
 			for (int i = 0; i < game.enemy().getUnits().size(); i++) {

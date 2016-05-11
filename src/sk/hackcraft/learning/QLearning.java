@@ -93,7 +93,8 @@ public class QLearning implements ILearning {
 			}
 		}
 		/////////
-		if (mProbabilityRandom.nextDouble() >= 1) {
+		if (mProbabilityRandom.nextDouble() >= 0.9)
+		{
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}
 		return actions[bestActionIndex];
@@ -118,9 +119,4 @@ public class QLearning implements ILearning {
 	public double[][] getQMatrix() {
 		return qMatrix;
 	}
-	
-/*
-	protected double getReward(int state, int action) {
-		return rewardMatrix[state][action];
-	}*/
 }

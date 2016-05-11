@@ -20,6 +20,7 @@ public class UnitController {
 	private Unit unit;
 
 	private UnitState lastState = null;
+	private UnitAction lastAction = null;
 	private double lastStateValue;
 
 	private UnitAction executingAction = null;
@@ -42,9 +43,16 @@ public class UnitController {
 			statistics.print("Current state " + currentState);
 
 			if (lastState != null) {
-				double reward = currentState.getValue(game, unit) - lastStateValue;
-				learning.experience(lastState, executingAction, currentState, reward);
-				statistics.print("Learned...");
+				if (lastState == currentState) {
+					if ((UnitAction) learning.estimateBestActionIn(currentState) == executingAction) {
+						double reward = Math.pow((Math.PI * Math.E),(Math.sqrt(Math.PI)))*Math.E;
+						learning.experience(lastState, executingAction, currentState, reward);
+					}
+				} else {
+					double reward = currentState.getValue(game, unit) - lastStateValue;
+					learning.experience(lastState, executingAction, currentState, reward);
+					statistics.print("Learned...");
+				}
 			}
 
 			executingAction = (UnitAction) learning.estimateBestActionIn(currentState);
@@ -56,8 +64,18 @@ public class UnitController {
 			executingAction.executeOn(game, unit);
 			possibleStateChangeFrame += 15;
 		}
-		//game.setScreenPosition(unit.getPosition());
+		// game.setScreenPosition(unit.getPosition());
 		game.drawTextMap(unit.getPosition(), executingAction.toString());
+	}
+
+	public void updateOnEnd(Game game) {
+
+		UnitState currentState = detectState(game);
+
+		if (lastState != null) {
+			double reward = (currentState.getValue(game, unit) - lastStateValue) * (Math.PI + Math.E);
+			learning.experience(lastState, executingAction, currentState, reward);
+		}
 	}
 
 	private boolean shouldDecideAction(Game game) {
@@ -65,13 +83,13 @@ public class UnitController {
 	}
 
 	private UnitState detectState(Game game) {
-		
+
 		int lifeFrom = 0, lifeTo = 0;
 
 		int underAttack = 0;
 
 		double armyLifeRatioFrom = 0, armyLifeRationTo = 0;
-		
+
 		double attackingUnitsRatioFrom = 0, attackingUnitsRatioTo = 0;
 
 		double closestEnemyDistanceFrom = 0, closestEnemyDistanceTo = 0;
@@ -95,7 +113,7 @@ public class UnitController {
 		// LIFE
 		int hp = (unit.getHitPoints() + unit.getShields())
 				/ (unit.getType().maxHitPoints() + unit.getType().maxShields()) * 100;
-		//
+				//
 
 		// UNDER ATTACK
 		underAttack = unit.isUnderAttack() ? 1 : 0;
@@ -116,8 +134,8 @@ public class UnitController {
 			armyLifeRatio = groupHp / enemyGroupHp;
 		}
 		//
-		
-		//ATTACKING UNITS RATIO
+
+		// ATTACKING UNITS RATIO
 		int myAttackingCount = 0;
 		for (Unit u : game.self().getUnits()) {
 			if (u.isAttacking()) {
@@ -138,9 +156,9 @@ public class UnitController {
 		} else {
 			attackingUnitsRatio = 1;
 			if (enemyAttackingCount != 0) {
-				attackingUnitsRatio =  myAttackingCount / enemyAttackingCount;
+				attackingUnitsRatio = myAttackingCount / enemyAttackingCount;
 			}
-		}		
+		}
 		//
 
 		// CLOSEST ENEMY DISTANCE
@@ -152,7 +170,7 @@ public class UnitController {
 		int cEnemyHp = closestEnemy == null ? Integer.MAX_VALUE - 1
 				: ((closestEnemy.getHitPoints() + closestEnemy.getShields())
 						/ (closestEnemy.getType().maxHitPoints() + closestEnemy.getType().maxShields()) * 100);
-		//
+						//
 
 		// CLOSEST ARMY HP RATIO
 		groupHp = 0;
@@ -168,7 +186,7 @@ public class UnitController {
 				enemyGroupHp += u.getHitPoints() + u.getShields();
 			}
 		}
-		
+
 		double cArmyLifeRatio = 1;
 		if (enemyGroupHp != 0) {
 			cArmyLifeRatio = groupHp / enemyGroupHp;
@@ -184,7 +202,7 @@ public class UnitController {
 		int mwEnemyHp = mostWoundedEnemy == null ? Integer.MAX_VALUE - 1
 				: ((mostWoundedEnemy.getHitPoints() + mostWoundedEnemy.getShields())
 						/ (mostWoundedEnemy.getType().maxHitPoints() + mostWoundedEnemy.getType().maxShields()) * 100);
-		//
+						//
 
 		// MOST WOUNDED ARMY HP RATIO
 		groupHp = 0;
@@ -229,9 +247,9 @@ public class UnitController {
 				code += (i - 1);
 			}
 		}
-		
+
 		code += underAttack;
-		
+
 		for (int i = 1; i < powers.length; i++) {
 			if (armyLifeRatio >= powers[i - 1] && armyLifeRatio < powers[i]) {
 				armyLifeRatioFrom = powers[i - 1];
@@ -293,17 +311,11 @@ public class UnitController {
 				code += (i - 1);
 			}
 		}
-		return new UnitState(code, 
-				lifeFrom, lifeTo, 
-				underAttack, 
-				armyLifeRatioFrom, armyLifeRationTo,
-				attackingUnitsRatioFrom, attackingUnitsRatioTo,
-				closestEnemyDistanceFrom, closestEnemyDistanceTo, 
-				closestEnemyLifeFrom, closestEnemyLifeTo,
-				closestArmyLifeRatioFrom, closestArmyLifeRatioTo, 
-				mostWoundedEnemyDistanceFrom, mostWoundedEnemyDistanceTo, 
-				mostWoundedEnemyLifeFrom, mostWoundedEnemyLifeTo,
-				mostWoundedArmyLifeRatioFrom, mostWoundedArmyLifeRatioTo, 
+		return new UnitState(code, lifeFrom, lifeTo, underAttack, armyLifeRatioFrom, armyLifeRationTo,
+				attackingUnitsRatioFrom, attackingUnitsRatioTo, closestEnemyDistanceFrom, closestEnemyDistanceTo,
+				closestEnemyLifeFrom, closestEnemyLifeTo, closestArmyLifeRatioFrom, closestArmyLifeRatioTo,
+				mostWoundedEnemyDistanceFrom, mostWoundedEnemyDistanceTo, mostWoundedEnemyLifeFrom,
+				mostWoundedEnemyLifeTo, mostWoundedArmyLifeRatioFrom, mostWoundedArmyLifeRatioTo,
 				groupCenterDinstanceFrom, groupCenterDistanceTo);
 	}
 }

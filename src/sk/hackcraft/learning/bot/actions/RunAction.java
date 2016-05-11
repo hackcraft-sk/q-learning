@@ -13,7 +13,7 @@ public class RunAction extends UnitAction {
 	public void executeOn(Game game, Unit unit) {
 		Random rand = new Random();
 
-		if (unit.isIdle()) {
+		
 			int mapWidht = game.mapWidth() * 32;
 			int mapHeight = game.mapWidth() * 32;
 
@@ -23,7 +23,7 @@ public class RunAction extends UnitAction {
 					+ (rand.nextInt(mapHeight / 2) - (mapHeight / 4));
 
 			unit.move(new Position(x, y));
-		}
+		
 
 	}
 	

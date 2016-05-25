@@ -87,21 +87,20 @@ public class UnitState implements IState {
 		}
 
 		for (Unit myUnit : game.self().getUnits()) {
-			value += myUnit.getHitPoints() + myUnit.getShields();
+			value += myUnit.getType().maxHitPoints() + myUnit.getHitPoints() + myUnit.getShields();
 			if (myUnit.isAttacking()) {
 				pau++;
 			}
-			value +=200;
 		}
 
 		for (Unit enemyUnit : game.enemy().getUnits()) {
-			value -= enemyUnit.getHitPoints() + enemyUnit.getShields();
-			value -= 200;
+			value -= enemyUnit.getType().maxHitPoints() + enemyUnit.getHitPoints() + enemyUnit.getShields();
 		}
 
-		if (value >= 0) {
-			value += 40 * pau;
-		}
+//		int wtf = game.self().getUnits().get(0).getType().groundWeapon().damageAmount();
+//		if (value >= 0) {
+//			value += game.self().getUnits().get(0).getType().groundWeapon().damageAmount() * pau;
+//		}
 
 		return value;
 	}

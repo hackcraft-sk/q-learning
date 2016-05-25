@@ -13,7 +13,8 @@ public class QLearning implements ILearning {
 
 	// learning rates
 	private double alpha = 0.3;
-	private double gamma = 0.7;
+	private double gamma = 0.9;
+	private double random = 0;
 
 	private IState[] states;
 	private IAction[] actions;
@@ -93,7 +94,7 @@ public class QLearning implements ILearning {
 			}
 		}
 		/////////
-		if (mProbabilityRandom.nextDouble() >= 0.9)
+		if (mProbabilityRandom.nextDouble() >= (1-random))
 		{
 			bestActionIndex = mActionIndexRandom.nextInt(actions.length);
 		}

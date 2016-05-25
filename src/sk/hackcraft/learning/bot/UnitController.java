@@ -43,16 +43,16 @@ public class UnitController {
 			statistics.print("Current state " + currentState);
 
 			if (lastState != null) {
-				if (lastState == currentState) {
-					if ((UnitAction) learning.estimateBestActionIn(currentState) == executingAction) {
-						double reward = Math.pow((Math.PI * Math.E),(Math.sqrt(Math.PI)))*Math.E;
-						learning.experience(lastState, executingAction, currentState, reward);
-					}
-				} else {
-					double reward = currentState.getValue(game, unit) - lastStateValue;
-					learning.experience(lastState, executingAction, currentState, reward);
-					statistics.print("Learned...");
-				}
+				double reward = currentState.getValue(game, unit) - lastStateValue;
+				
+//				if (lastState.equals(currentState)) {
+//					if ((UnitAction) learning.estimateBestActionIn(currentState) == executingAction) {
+//						reward -= 5;
+//					}
+//				}
+					
+				learning.experience(lastState, executingAction, currentState, reward);
+				statistics.print("Learned...");
 			}
 
 			executingAction = (UnitAction) learning.estimateBestActionIn(currentState);
@@ -62,7 +62,7 @@ public class UnitController {
 
 			statistics.print("ACTION: " + executingAction.toString());
 			executingAction.executeOn(game, unit);
-			possibleStateChangeFrame += 15;
+			possibleStateChangeFrame += 30;
 		}
 		// game.setScreenPosition(unit.getPosition());
 		game.drawTextMap(unit.getPosition(), executingAction.toString());
@@ -71,9 +71,17 @@ public class UnitController {
 	public void updateOnEnd(Game game) {
 
 		UnitState currentState = detectState(game);
+		double currentStateValue = currentState.getValue(game, unit);
+		
+		if (game.enemy().getUnits().isEmpty()) {
+			currentStateValue = 0;
+			for (Unit myUnit : game.self().getUnits()) {
+				currentStateValue += myUnit.getType().maxHitPoints() + myUnit.getHitPoints() + myUnit.getShields();
+			}
+		}
 
 		if (lastState != null) {
-			double reward = (currentState.getValue(game, unit) - lastStateValue) * (Math.PI + Math.E);
+			double reward = (currentStateValue - lastStateValue) * 1000;
 			learning.experience(lastState, executingAction, currentState, reward);
 		}
 	}

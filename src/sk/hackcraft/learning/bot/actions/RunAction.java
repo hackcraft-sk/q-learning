@@ -13,17 +13,13 @@ public class RunAction extends UnitAction {
 	public void executeOn(Game game, Unit unit) {
 		Random rand = new Random();
 
-		
-			int mapWidht = game.mapWidth() * 32;
-			int mapHeight = game.mapWidth() * 32;
+		int mapWidht = game.mapWidth() * 32;
+		int mapHeight = game.mapWidth() * 32;
 
-			int x = unit.getPosition().getX()
-					+ (rand.nextInt(mapWidht / 2) - (mapWidht / 4));
-			int y = unit.getPosition().getY()
-					+ (rand.nextInt(mapHeight / 2) - (mapHeight / 4));
+		int x = unit.getPosition().getX() + (rand.nextInt(mapWidht / 2) - (mapWidht / 4));
+		int y = unit.getPosition().getY() + (rand.nextInt(mapHeight / 2) - (mapHeight / 4));
 
-			unit.move(new Position(x, y));
-		
+		unit.move(new Position(x, y));
 
 	}
 	

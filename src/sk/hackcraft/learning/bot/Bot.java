@@ -36,7 +36,7 @@ public class Bot extends DefaultBWListener {
 	private UnitAction[] actions = new UnitAction[] { new RunAction(),
 			new AttackMostWoundedAction(), new AttackNearestAction(),
 			new DoNothingAction(), new FleeFromEnemyAction(),
-			new FleeToCenterAction(), new AttackWeakestGroupAction() };
+			new FleeToCenterAction(), /*new AttackWeakestGroupAction()*/ };
 
 	private ILearning learning;
 
@@ -55,7 +55,7 @@ public class Bot extends DefaultBWListener {
 	public void onStart() {
 		game = mirror.getGame();
 		game.sendText("black sheep wall");
-		game.setLocalSpeed(0);		/*!!!!!!!*/
+		//game.setLocalSpeed(0);		/*!!!!!!!*/
 		self = game.self();
 
 		qMatrixFile = new FileIO("qMatrix.txt");
